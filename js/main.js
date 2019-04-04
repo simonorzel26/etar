@@ -19,23 +19,26 @@ window.onload = () => {
             let gain = 0.95,
                 dist = 0,
                 tone = 1,
-                gainRange = document.querySelector( '#gainRange' ),
-                distRange = document.querySelector( '#distRange' ),
-                toneRange = document.querySelector( '#toneRange' );
+                gainRange = new PrecisionInputs.FLStandardKnob( document.querySelector( '#gainRange' ) ),
+                distRange = new PrecisionInputs.FLStandardKnob( document.querySelector( '#distRange' ) ),
+                toneRange = new PrecisionInputs.FLStandardKnob( document.querySelector( '#toneRange' ) );
             
-            gainRange.addEventListener('input', () => {
-                gain = easeInQuad(parseInt(gainRange.value, 10) / 100 );
+            gainRange.value = gain;
+            distRange.value = dist;
+            toneRange.value = tone;
+            
+            gainRange.addEventListener('change', (evt) => {
+                gain = easeInQuad(evt.target.value);
                 gainNode.gain.value = gain;
-                console.log( gain );
             });
             
-            distRange.addEventListener('input', () => {
-                dist = parseInt(distRange.value, 10) * 5;
+            distRange.addEventListener('change', (evt) => {
+                dist = evt.target.value * 1000;
                 distNode.curve = makeDistortionCurve(dist);
             });
             
-            toneRange.addEventListener('input', () => {
-                tone = parseInt(toneRange.value, 10) / 100;
+            toneRange.addEventListener('change', (evt) => {
+                tone = evt.target.value;
                 biquadFilter.frequency.value = getFilterVal(tone);
             });
         
@@ -59,7 +62,7 @@ window.onload = () => {
             let distNode = ctx.createWaveShaper();
             distNode.curve = makeDistortionCurve(dist);
             
-            let biquadFilter = ctx.createBiquadFilter('lowpass');
+            let biquadFilter = ctx.createBiquadFilter( 'lowpass' );
             biquadFilter.frequency.value = getFilterVal(tone);
             
         

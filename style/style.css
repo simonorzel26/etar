@@ -11,18 +11,17 @@
 
 .range-slider {
 
-    -webkit-appearance: slider-vertical; /* WebKit */
-    height: 100px;
-    width: 20px;
-    position: absolute;
+    height: 40px;
+    width: 40px;
+    position: absolute !important;
     bottom: 50px;
     left: 20px;
 }
 
 .dist-slider {
-    left: 40px;
+    left: 60px;
 }
 
 .tone-slider {
-    left: 60px;
+    left: 100px;
 }

@@ -2,16 +2,19 @@
 <head>
 	<script src="js/main.js"></script>
 	<link href="style/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="node_modules/precision-inputs/css/precision-inputs.fl-controls.css">
+
 </head>
 <body>
 	<button id="enableBtn" class="enable-btn">
 		Enable mic input
 	</button>
 
-	<input type="range" id="gainRange" min="0.1" max="100" value="95" class="range-slider gain-slider">
-	<input type="range" id="distRange" min="0.1" max="100" value="50" class="range-slider dist-slider">
-	<input type="range" id="toneRange" min="0.1" max="100" value="50" class="range-slider tone-slider">
+	<div id="gainRange" class="range-slider gain-slider"></div>
+	<div id="distRange"class="range-slider dist-slider"></div>
+	<div id="toneRange"class="range-slider tone-slider"></div>
 
 	<canvas id="dbMeter" width="50" height="100"></canvas>
+	<script src="node_modules/precision-inputs/scripts/precision-inputs.fl-controls.js"></script>
 </body>
 </html>
