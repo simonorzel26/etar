@@ -1,0 +1,22 @@
+{
+  "name": "etar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bosco-reed/etar.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bosco-reed/etar/issues"
+  },
+  "homepage": "https://github.com/bosco-reed/etar#readme",
+  "devDependencies": {
+    "web-audio-peak-meter": "^1.0.0"
+  }
+}
