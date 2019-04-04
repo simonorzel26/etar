@@ -1,38 +1,89 @@
 window.onload = () => {
-    document.querySelector( 'button' ).addEventListener( 'click', () => {
+    
+    let effectStack = {
+        distortion: true
+    };
+    
+    const easeInQuad = (t) => { return t*t };
+    
+    const enableStream = () => {
+    
+        const distortionPedal = ( src ) => {
+            
+            let gain = 0.95,
+                dist = 0,
+                tone = 0,
+                gainRange = document.querySelector( '#gainRange' ),
+                distRange = document.querySelector( '#distRange' ),
+                toneRange = document.querySelector( '#toneRange' );
+            
+            gainRange.addEventListener('input', () => {
+                gain = easeInQuad(parseInt(gainRange.value, 10) / 100 );
+                gainNode.gain.value = gain;
+                console.log( gain );
+            });
+            
+            distRange.addEventListener('input', () => {
+                dist = parseInt(distRange.value, 10) * 5;
+                distNode.curve = makeDistortionCurve(dist);
+            });
+            
+            //toneRange.addEventListener('input', () => {
+            //    dist = parseInt(distRange.value, 10) * 5;
+            //    distNode.curve = makeDistortionCurve(dist);
+            //});
         
-        function makeDistortionCurve(amount) {
-            var k = typeof amount === 'number' ? amount : 50,
-                n_samples = 44100,
-                curve = new Float32Array(n_samples),
-                deg = Math.PI / 180,
-                i = 0,
-                x;
-            for ( ; i < n_samples; ++i ) {
-                x = i * 2 / n_samples - 1;
-                curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+            const makeDistortionCurve = ( amount ) => {
+                let k = typeof amount === 'number' ? amount : 50,
+                    n_samples = 44100,
+                    curve = new Float32Array(n_samples),
+                    deg = Math.PI / 180,
+                    i = 0,
+                    x;
+                for ( ; i < n_samples; ++i ) {
+                    x = i * 2 / n_samples - 1;
+                    curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+                }
+                return curve;
+            };
+        
+            let gainNode = ctx.createGain();
+            gainNode.gain.value = gain;
+        
+            let distNode = ctx.createWaveShaper();
+            distNode.curve = makeDistortionCurve(dist);
+        
+            return src.connect(gainNode).connect(distNode);
+        
+        };
+        
+        const addEffectStack = ( src ) => {
+            let srcWithEffects = src;
+        
+            if ( effectStack.distortion ) {
+                srcWithEffects = distortionPedal( srcWithEffects );
             }
-            return curve;
+        
+            return srcWithEffects;
+        };
+    
+        const success = ( stream ) => {
+            let src = ctx.createMediaStreamSource(stream),
+                effectStack = addEffectStack( src );
+            
+            effectStack.connect(ctx.destination);
+        };
+    
+        const err = ( e ) => {
+            console.log(e);
         };
     
         let ctx = new AudioContext() || new webkitAudioContext();
-        
-        let distortion = ctx.createWaveShaper();
-        distortion.curve = makeDistortionCurve(400);
-        
-        
+    
         navigator.webkitGetUserMedia({audio: true}, success, err);
         
-        function success( stream ) {
-        let src = ctx.createMediaStreamSource(stream);
+    };
     
-        src.connect(distortion);
-        src.connect(ctx.destination);
-        }
-        
-        function err( e ) {
-        console.log(e);
-        }
-    } );
+    document.querySelector( '#enableBtn' ).addEventListener( 'click', enableStream );
 };
 

@@ -1,3 +1,28 @@
 #dbMeter {
     background-color: #000;
 }
+
+.enable-btn {
+    height: 30px;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+
+.range-slider {
+
+    -webkit-appearance: slider-vertical; /* WebKit */
+    height: 100px;
+    width: 20px;
+    position: absolute;
+    bottom: 50px;
+    left: 20px;
+}
+
+.dist-slider {
+    left: 40px;
+}
+
+.tone-slider {
+    left: 60px;
+}
