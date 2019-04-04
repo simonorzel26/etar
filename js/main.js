@@ -4,7 +4,13 @@ window.onload = () => {
         distortion: true
     };
     
-    const easeInQuad = (t) => { return t*t };
+    const easeInQuad = ( t ) => { return t*t };
+    
+    const getFilterVal = ( range ) => {
+        let maxValMultiple = 22050;
+        let easedRange = easeInQuad( range );
+        return maxValMultiple * easedRange;
+    };
     
     const enableStream = () => {
     
@@ -12,7 +18,7 @@ window.onload = () => {
             
             let gain = 0.95,
                 dist = 0,
-                tone = 0,
+                tone = 1,
                 gainRange = document.querySelector( '#gainRange' ),
                 distRange = document.querySelector( '#distRange' ),
                 toneRange = document.querySelector( '#toneRange' );
@@ -28,10 +34,10 @@ window.onload = () => {
                 distNode.curve = makeDistortionCurve(dist);
             });
             
-            //toneRange.addEventListener('input', () => {
-            //    dist = parseInt(distRange.value, 10) * 5;
-            //    distNode.curve = makeDistortionCurve(dist);
-            //});
+            toneRange.addEventListener('input', () => {
+                tone = parseInt(toneRange.value, 10) / 100;
+                biquadFilter.frequency.value = getFilterVal(tone);
+            });
         
             const makeDistortionCurve = ( amount ) => {
                 let k = typeof amount === 'number' ? amount : 50,
@@ -52,8 +58,12 @@ window.onload = () => {
         
             let distNode = ctx.createWaveShaper();
             distNode.curve = makeDistortionCurve(dist);
+            
+            let biquadFilter = ctx.createBiquadFilter('lowpass');
+            biquadFilter.frequency.value = getFilterVal(tone);
+            
         
-            return src.connect(gainNode).connect(distNode);
+            return src.connect(gainNode).connect(distNode).connect(biquadFilter);
         
         };
         
